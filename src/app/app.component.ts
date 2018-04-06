@@ -2,13 +2,20 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
-import { HomePage } from '../pages/home/home';
+import * as firebase from 'firebase';
+import { SigninPage } from '../pages/signin/signin';
+const config = {
+  apiKey: 'AIzaSyDWYh9eG2yxTsXUp5SnLTh-_CJNC3-tH0w',
+  authDomain: 'ionic-dania.firebaseapp.com',
+  databaseURL: 'https://ionic-dania.firebaseio.com',
+  projectId: 'ionic-dania',
+  storageBucket: 'ionic-dania.appspot.com',
+};
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = HomePage;
+  rootPage:any = SigninPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -17,6 +24,7 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
+    firebase.initializeApp(config);
   }
 }
 
