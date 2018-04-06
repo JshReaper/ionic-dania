@@ -63,6 +63,10 @@ export class HomePage {
       nickname:this.nickname
     });
   }
+
+  logEvent(){
+    console.log("Camera button event detected");
+  }
 }
 export const snapshotToArray = snapshot => {
   let returnArr = [];
