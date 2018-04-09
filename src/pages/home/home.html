@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Chatonic
+      chatonic
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="exitChat()">
@@ -36,6 +36,18 @@
       </ng-template>
     </ion-item>
   </ion-list>
+  <ion-fab bottom right>
+      <button ion-fab mini [style.background-color]="color">
+        <ion-icon name="add"></ion-icon>
+    </button>
+    <ion-fab-list side="top">
+
+      <button ion-fab (click)="logEvent();" [style.background-color]="color">
+          <ion-icon name="camera"></ion-icon>
+          <div class="label">camera</div>
+      </button>
+  </ion-fab-list>
+</ion-fab>
 </ion-content>
 
 <ion-footer>
