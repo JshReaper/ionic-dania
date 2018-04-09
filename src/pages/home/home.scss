@@ -7,6 +7,7 @@ page-home {
       .item-md, .item-ios {
         background: none;
       }
+      
     }
     ion-footer {
       background: white;
@@ -15,6 +16,41 @@ page-home {
         font-size: 20px;
         color: green;
       }
+    }
+    .fab {
+      contain: initial;
+      margin: -10px;
+    }
+
+    ion-fab {
+        button {
+            box-shadow: 0 4px 10px #6b6b6b;
+            
+        }
+
+        ion-fab-list button[ion-fab] {
+            text-align: center;
+            overflow: visible;
+           
+            div.label {
+              position: absolute;
+              right: 48px;
+              background: rgba(248, 248, 248, 1);
+              height: 24px;
+              line-height: 16px;
+              padding-left: 8px;
+              padding-right: 8px;
+              padding-top: 5px;
+              padding-bottom: 5px;
+              border-radius: 3px;
+              color: #000;
+              box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.14), 0 4px 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .button-inner {
+            overflow: visible;
+        }
     }
     .chat-status {
       min-height: 49px;
