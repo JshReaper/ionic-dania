@@ -19,14 +19,13 @@ page-home {
     }
     .fab {
       contain: initial;
-      margin: -10px;
     }
 
     ion-fab {
         button {
             box-shadow: 0 4px 10px #6b6b6b;
-            
         }
+        
 
         ion-fab-list button[ion-fab] {
             text-align: center;

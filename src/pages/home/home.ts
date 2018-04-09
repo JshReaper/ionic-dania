@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Content } from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
+declare const google: any;
 
 @Component({
   selector: 'page-home',
@@ -9,6 +10,10 @@ import * as firebase from 'Firebase';
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
+  lat;
+  lng;
+  address;
+
   data = { type:'', nickname:'', message:'' };
   chats = [];
   roomkey:string;
@@ -39,6 +44,7 @@ export class HomePage {
       }, 1000);
     });
   }
+
   sendMessage() {
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     newData.set({
@@ -68,6 +74,37 @@ export class HomePage {
   logEvent(){
     console.log("Camera button event detected");
   }
+
+  Locate() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.lat = position.coords.latitude; // Works fine
+          this.lng = position.coords.longitude;  // Works fine
+
+          let geocoder = new google.maps.Geocoder();
+          let latlng = new google.maps.LatLng(this.lat, this.lng);
+          let request = {
+            latLng: latlng
+          };
+
+          geocoder.geocode(request, (results, status) => {
+            if (status == google.maps.GeocoderStatus.OK) {
+              if (results[0] != null) {
+                this.data.message = results[0].formatted_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
+                console.log(this.address);  //<<<=== BUT here it Prints the correct value to the console !!!
+              } else {
+                alert("No address available");
+              }
+            }
+          });
+        },
+        error => {
+          console.log("Error code: " + error.code + "<br /> Error message: " + error.message);
+        }
+      );
+    }
+  }
 }
 export const snapshotToArray = snapshot => {
   let returnArr = [];
@@ -80,4 +117,3 @@ export const snapshotToArray = snapshot => {
 
   return returnArr;
 };
-
