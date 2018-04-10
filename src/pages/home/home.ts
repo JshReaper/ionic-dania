@@ -13,15 +13,16 @@ export class HomePage {
   data = { type:'', nickname:'', message:'' };
   chats = [];
   camOptionsSet:boolean = false;
-  public image:any;
   cameraOptions:CameraOptions;
   //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
   public imageToShow:any;
-  isImageLoading:boolean;
+  isImageLoading:boolean = true;
 
+  public photos : any;
+  public base64Image : string;
   constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
 
     this.roomkey = this.navParams.get("key") as string;
@@ -47,6 +48,9 @@ export class HomePage {
         }
       }, 1000);
     });
+  }
+  ngOnInit() {
+    this.photos = [];
   }
   sendMessage() {
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
@@ -74,9 +78,7 @@ export class HomePage {
       nickname:this.nickname
     });
   }
-  ngOnInit() {
-    this.image = [];
-  }
+  
   logEvent(){
     const options : CameraOptions = {
       quality: 50, // picture quality
@@ -86,7 +88,9 @@ export class HomePage {
     }
     this.camera.getPicture(this.cameraOptions).then((imageData) =>{
 this.isImageLoading = true;
-      this.imageToShow = "data:image/jpeg;base64," + imageData;
+this.base64Image = "data:image/jpeg;base64," + imageData;
+      this.photos.push(this.base64Image);
+      this.photos.reverse();
 this.isImageLoading = false;
     },function(err){
       console.log(err);
