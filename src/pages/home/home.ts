@@ -13,7 +13,7 @@ export class HomePage {
   data = { type:'', nickname:'', message:'' };
   chats = [];
   camOptionsSet:boolean = false;
-  public image:string;
+  public image:any;
   cameraOptions:CameraOptions;
   //camera:Camera;
   roomkey:string;
@@ -69,7 +69,9 @@ export class HomePage {
       nickname:this.nickname
     });
   }
-
+  ngOnInit() {
+    this.image = [];
+  }
   logEvent(){
     const options : CameraOptions = {
       quality: 50, // picture quality
