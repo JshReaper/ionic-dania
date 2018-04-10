@@ -74,12 +74,6 @@ export class HomePage {
       nickname:this.nickname
     });
   }
-
-  insertImage(imageData){
-    this.isImageLoading = true;
-    this.imageToShow = imageData;
-    this.isImageLoading = false;
-  }
   ngOnInit() {
     this.image = [];
   }
@@ -91,7 +85,9 @@ export class HomePage {
       mediaType: this.camera.MediaType.PICTURE
     }
     this.camera.getPicture(this.cameraOptions).then(function(imageData){
-      this.insertImage(imageData);
+      this.isImageLoading = true;
+      this.imageToShow = imageData;
+      this.isImageLoading = false;
 
     },function(err){
       console.log(err);
