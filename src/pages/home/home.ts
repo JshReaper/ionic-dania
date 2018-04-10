@@ -15,13 +15,15 @@ export class HomePage {
   camOptionsSet:boolean = false;
   public image:string;
   cameraOptions:CameraOptions;
-  camera:Camera;
+  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
   imageToShow: any;
   isImageLoading : boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
+
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
@@ -74,10 +76,17 @@ export class HomePage {
   }
 
   logEvent(){
-    if(!this.camOptionsSet){
-      this.setOptions();
-      this.camOptionsSet = true;
+    const options : CameraOptions = {
+      quality: 50, // picture quality
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE
     }
+    if(!this.camOptionsSet){
+      //this.setOptions();
+      //this.camOptionsSet = true;
+    }
+
     this.camera.getPicture(this.cameraOptions).then(function(imageData){
       this.insertImage(imageData);
 
