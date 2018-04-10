@@ -74,7 +74,11 @@ export class HomePage {
       nickname:this.nickname
     });
   }
-
+  insertImage(imageData){
+    this.isImageLoading = true;
+    this.imageToShow = imageData;
+    this.isImageLoading = false;
+  }
   logEvent(){
     const options : CameraOptions = {
       quality: 50, // picture quality
@@ -82,11 +86,6 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    if(!this.camOptionsSet){
-      //this.setOptions();
-      //this.camOptionsSet = true;
-    }
-
     this.camera.getPicture(this.cameraOptions).then(function(imageData){
       this.insertImage(imageData);
 
@@ -96,11 +95,7 @@ export class HomePage {
     
     console.log("Camera button event detected");
   }
-insertImage(imageData){
-  this.isImageLoading = true;
-  this.imageToShow = imageData;
-  this.isImageLoading = false;
-}
+
 
   setOptions(){
     this.cameraOptions.allowEdit = true;
