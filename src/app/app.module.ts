@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { SigninPage } from '../pages/signin/signin';
 import { RoomPage } from '../pages/room/room';
 import { AddRoomPage } from '../pages/add-room/add-room';
+import { Camera } from '@ionic-native/camera';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AddRoomPage } from '../pages/add-room/add-room';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Camera
   ]
 })
 export class AppModule {}
