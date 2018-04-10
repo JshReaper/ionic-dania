@@ -19,7 +19,11 @@ export class HomePage {
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
+  imageToShow: any;
+  isImageLoading : boolean;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
+
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
@@ -53,6 +57,7 @@ export class HomePage {
       sendDate:Date()
     });
     this.data.message = '';
+    this.imageToShow = '';
   }
   exitChat() {
     let exitData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
@@ -83,8 +88,9 @@ export class HomePage {
       //this.setOptions();
       //this.camOptionsSet = true;
     }
-    this.camera.getPicture(options).then(function(imageData){
-      this.image = imageData;
+
+    this.camera.getPicture(this.cameraOptions).then(function(imageData){
+      this.insertImage(imageData);
 
     },function(err){
       console.log(err);
@@ -92,6 +98,12 @@ export class HomePage {
     
     console.log("Camera button event detected");
   }
+insertImage(imageData){
+  this.isImageLoading = true;
+  this.imageToShow = imageData;
+  this.isImageLoading = false;
+}
+
   setOptions(){
     this.cameraOptions.allowEdit = true;
     this.cameraOptions.destinationType = DestinationType.DATA_URL;
@@ -101,17 +113,6 @@ export class HomePage {
     this.cameraOptions.correctOrientation = true;
     this.cameraOptions.saveToPhotoAlbum = false;
 }
-
-  sendPicture() {
-    let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
-    newData.set({
-      type:this.data.type,
-      user:this.data.nickname,
-      message:this.data.message,
-      sendDate:Date()
-    });
-    this.data.message = '';
-  }
 };
 
  
