@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Content } from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
+import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
 
 @Component({
   selector: 'page-home',
@@ -11,10 +12,14 @@ export class HomePage {
   @ViewChild(Content) content: Content;
   data = { type:'', nickname:'', message:'' };
   chats = [];
+  camOptionsSet:boolean = false;
+  public image:string;
+  cameraOptions:CameraOptions;
+  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
@@ -66,9 +71,42 @@ export class HomePage {
   }
 
   logEvent(){
+    if(!this.camOptionsSet){
+      setOptions();
+      this.camOptionsSet = true;
+    }
+    this.camera.getPicture(this.cameraOptions).then(function(imageData){
+      this.image = imageData;
+
+    },function(err){
+      console.log(err);
+    });
+    
     console.log("Camera button event detected");
   }
+  sendPicture() {
+    let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
+    newData.set({
+      type:this.data.type,
+      user:this.data.nickname,
+      message:this.data.message,
+      sendDate:Date()
+    });
+    this.data.message = '';
+  }
+};
+
+
+function setOptions(){
+    this.cameraOptions.allowEdit = true;
+    this.cameraOptions.destinationType = DestinationType.DATA_URL;
+    this.cameraOptions.quality = 70;
+    this.cameraOptions.encodingType = EncodingType.JPEG;
+    this.cameraOptions.mediaType = MediaType.PICTURE;
+    this.cameraOptions.correctOrientation = true;
+    this.cameraOptions.saveToPhotoAlbum = false;
 }
+
 export const snapshotToArray = snapshot => {
   let returnArr = [];
 
