@@ -19,8 +19,8 @@ export class HomePage {
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
-  imageToShow: any;
-  isImageLoading : boolean;
+  imageToShow:any;
+  isImageLoading:boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
 
