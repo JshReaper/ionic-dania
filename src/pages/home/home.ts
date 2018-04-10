@@ -85,9 +85,7 @@ export class HomePage {
       mediaType: this.camera.MediaType.PICTURE
     }
     this.camera.getPicture(this.cameraOptions).then(function(imageData){
-      this.isImageLoading = true;
       this.imageToShow = imageData;
-      this.isImageLoading = false;
 
     },function(err){
       console.log(err);
@@ -95,17 +93,6 @@ export class HomePage {
     
     console.log("Camera button event detected");
   }
-
-
-  setOptions(){
-    this.cameraOptions.allowEdit = true;
-    this.cameraOptions.destinationType = DestinationType.DATA_URL;
-    this.cameraOptions.quality = 70;
-    this.cameraOptions.encodingType = EncodingType.JPEG;
-    this.cameraOptions.mediaType = MediaType.PICTURE;
-    this.cameraOptions.correctOrientation = true;
-    this.cameraOptions.saveToPhotoAlbum = false;
-}
 };
 
  
