@@ -71,11 +71,17 @@ export class HomePage {
   }
 
   logEvent(){
-    if(!this.camOptionsSet){
-      this.setOptions();
-      this.camOptionsSet = true;
+    const options : CameraOptions = {
+      quality: 50, // picture quality
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(this.cameraOptions).then(function(imageData){
+    if(!this.camOptionsSet){
+      //this.setOptions();
+      //this.camOptionsSet = true;
+    }
+    this.camera.getPicture(options).then(function(imageData){
       this.image = imageData;
 
     },function(err){
