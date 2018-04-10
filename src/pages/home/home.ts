@@ -72,7 +72,7 @@ export class HomePage {
 
   logEvent(){
     if(!this.camOptionsSet){
-      setOptions();
+      this.setOptions();
       this.camOptionsSet = true;
     }
     this.camera.getPicture(this.cameraOptions).then(function(imageData){
@@ -84,6 +84,16 @@ export class HomePage {
     
     console.log("Camera button event detected");
   }
+  setOptions(){
+    this.cameraOptions.allowEdit = true;
+    this.cameraOptions.destinationType = DestinationType.DATA_URL;
+    this.cameraOptions.quality = 70;
+    this.cameraOptions.encodingType = EncodingType.JPEG;
+    this.cameraOptions.mediaType = MediaType.PICTURE;
+    this.cameraOptions.correctOrientation = true;
+    this.cameraOptions.saveToPhotoAlbum = false;
+}
+
   sendPicture() {
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     newData.set({
@@ -96,16 +106,7 @@ export class HomePage {
   }
 };
 
-
-function setOptions(){
-    this.cameraOptions.allowEdit = true;
-    this.cameraOptions.destinationType = DestinationType.DATA_URL;
-    this.cameraOptions.quality = 70;
-    this.cameraOptions.encodingType = EncodingType.JPEG;
-    this.cameraOptions.mediaType = MediaType.PICTURE;
-    this.cameraOptions.correctOrientation = true;
-    this.cameraOptions.saveToPhotoAlbum = false;
-}
+ 
 
 export const snapshotToArray = snapshot => {
   let returnArr = [];
