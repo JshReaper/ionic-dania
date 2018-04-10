@@ -85,9 +85,9 @@ export class HomePage {
       mediaType: this.camera.MediaType.PICTURE
     }
     this.camera.getPicture(this.cameraOptions).then((imageData) =>{
-
+this.isImageLoading = true;
       this.imageToShow = "data:image/jpeg;base64," + imageData;
-
+this.isImageLoading = false;
     },function(err){
       console.log(err);
     });
