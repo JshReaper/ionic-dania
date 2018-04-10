@@ -19,7 +19,7 @@ export class HomePage {
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
-  imageToShow:any;
+  public imageToShow:any;
   isImageLoading:boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
@@ -84,8 +84,9 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(this.cameraOptions).then(function(imageData){
-      this.imageToShow = imageData;
+    this.camera.getPicture(this.cameraOptions).then((imageData) =>{
+
+      this.imageToShow = "data:image/jpeg;base64," + imageData;
 
     },function(err){
       console.log(err);
