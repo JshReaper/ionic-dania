@@ -20,8 +20,11 @@ export class HomePage {
 
   data = { type:'', nickname:'', message:'' };
   chats = [];
+  deci:any;
   camOptionsSet:boolean = false;
   cameraOptions:CameraOptions;
+  private subscription:any;
+  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
@@ -29,19 +32,18 @@ export class HomePage {
   isImageLoading:boolean = true;
   alertCtrl: AlertController;
 
-  private dbMeter;
-  private subscription: any;
-  public deci = 'test';
+  
 
   public photos : any;
   public base64Image : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController, dbMeter: DBMeter) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController,private dbMeter: DBMeter) {
+    this.UpdateDeci();
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
     this.data.nickname = this.nickname;
     this.alertCtrl = AlertCtrl;
-    this.dbMeter = dbMeter;
+
   
     let joinData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     joinData.set({
@@ -72,7 +74,7 @@ export class HomePage {
   }
   sendMessage() {
     if (this.data.message != ""){
-      this.UpdateDeci();
+      
       this.data.message +=' '+ this.deci;
         let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
           newData.set({
@@ -120,7 +122,7 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(this.cameraOptions).then((imageData) =>{
+    this.camera.getPicture(options).then((imageData) =>{
     this.isImageLoading = true;
     this.base64Image = "data:image/jpeg;base64," + imageData;
     this.upload();
