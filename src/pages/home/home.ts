@@ -1,29 +1,33 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Events} from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
-
+import { DBMeter } from '@ionic-native/db-meter';
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers:[DBMeter]
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
   data = { type:'', nickname:'', message:'' };
   chats = [];
+  public deci = 'test';
   camOptionsSet:boolean = false;
   cameraOptions:CameraOptions;
+  private subscription:any;
   //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
   public imageToShow:any;
   isImageLoading:boolean = true;
-
+  
   public photos : any;
   public base64Image : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera,private dbMeter: DBMeter) {
+    
 
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
@@ -51,7 +55,15 @@ export class HomePage {
   ngOnInit() {
     this.photos = [];
   }
+  UpdateDeci(){
+    let subscription = this.dbMeter.start().subscribe(
+      data => this.deci = data
+    );
+    
+  }
   sendMessage() {
+    this.UpdateDeci();
+   this.data.message +=' '+ this.deci;
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     newData.set({
       type:this.data.type,
