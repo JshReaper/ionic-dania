@@ -3,6 +3,7 @@ import { NavController, NavParams, Content } from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 declare const google: any;
 
 
@@ -59,15 +60,17 @@ export class HomePage {
     this.photos = [];
   }
   sendMessage() {
-    let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
-    newData.set({
-      type:this.data.type,
-      user:this.data.nickname,
-      message:this.data.message,
-      sendDate:Date()
-    });
-    this.data.message = '';
-    this.imageToShow = '';
+    if(this.data.message != ""){
+      let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
+      newData.set({
+        type:this.data.type,
+        user:this.data.nickname,
+        message:this.data.message,
+        sendDate:Date()
+      });
+      this.data.message = '';
+      this.imageToShow = '';
+    }
   }
   exitChat() {
     let exitData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
