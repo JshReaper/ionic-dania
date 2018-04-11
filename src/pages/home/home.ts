@@ -13,7 +13,7 @@ export class HomePage {
   @ViewChild(Content) content: Content;
   data = { type:'', nickname:'', message:'' };
   chats = [];
-  public deci = 'test';
+  deci:any;
   camOptionsSet:boolean = false;
   cameraOptions:CameraOptions;
   private subscription:any;
@@ -27,7 +27,7 @@ export class HomePage {
   public photos : any;
   public base64Image : string;
   constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera,private dbMeter: DBMeter) {
-    
+    this.UpdateDeci();
 
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
@@ -58,11 +58,11 @@ export class HomePage {
   UpdateDeci(){
     let subscription = this.dbMeter.start().subscribe(
       data => this.deci = data
+      
     );
-    
   }
   sendMessage() {
-    this.UpdateDeci();
+    
    this.data.message +=' '+ this.deci;
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     newData.set({
