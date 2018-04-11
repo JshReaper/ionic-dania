@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content , AlertController} from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
@@ -26,15 +26,16 @@ export class HomePage {
   offStatus:boolean = false;
   public imageToShow:any;
   isImageLoading:boolean = true;
-
+ alertCtrl: AlertController;
   public photos : any;
   public base64Image : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController) {
 
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
     this.data.nickname = this.nickname;
+    this.alertCtrl = AlertCtrl;
   
     let joinData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     joinData.set({
@@ -65,11 +66,23 @@ export class HomePage {
         type:this.data.type,
         user:this.data.nickname,
         message:this.data.message,
+        hasPicture:false,
         sendDate:Date()
       });
       this.data.message = '';
-      this.imageToShow = '';
     }
+  }
+  sendPicture() {
+    let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
+    newData.set({
+      type:this.data.type,
+      user:this.data.nickname,
+      hasPicture:true,
+      picture:this.base64Image,
+      sendDate:Date()
+    });
+    this.data.message = '';
+    this.imageToShow = '';
   }
   exitChat() {
     let exitData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
@@ -95,11 +108,10 @@ export class HomePage {
       mediaType: this.camera.MediaType.PICTURE
     }
     this.camera.getPicture(this.cameraOptions).then((imageData) =>{
-this.isImageLoading = true;
-this.base64Image = "data:image/jpeg;base64," + imageData;
-      this.photos.push(this.base64Image);
-      this.photos.reverse();
-this.isImageLoading = false;
+    this.isImageLoading = true;
+    this.base64Image = "data:image/jpeg;base64," + imageData;
+    this.upload();
+    this.isImageLoading = false;
     },function(err){
       console.log(err);
     });
@@ -108,8 +120,7 @@ this.isImageLoading = false;
   }
 
   Locate() {
-    //if (navigator.geolocation) 
-    {
+    if (navigator.geolocation){
       navigator.geolocation.getCurrentPosition(
         position => {
           this.lat = position.coords.latitude; // Works fine
@@ -120,13 +131,11 @@ this.isImageLoading = false;
           let request = { latLng: latlng };
 
           console.log(position);
-          console.log(request);
           geocoder.geocode(request, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[0] != null) {
                 this.data.message = results[0].street_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
-                console.log(this.address);   //<<<=== BUT here it Prints the correct value to the console !!!
-                this.sendMessage();
+                console.log(results[0].street_address);   //<<<=== BUT here it Prints the correct value to the console !!!
               } else {
                 console.log("No address available");
               }
@@ -139,6 +148,36 @@ this.isImageLoading = false;
       );
     }
   }
+
+  upload(){
+    let storageRef = firebase.storage().ref();
+ 
+    //timestamp as filename
+    const fileName = Math.floor(Date.now() / 1000);
+
+    //creating a reference to images/todays-date.jpg
+    const imageRef = storageRef.child('images/${filename}.jpg');
+
+    //imageRef.putString(this.base64Image, firebase.storage.StringFormat.DATA_URL).then((snapshot)=>{
+
+      //succesful upload
+      this.showSuccesfulUploadAlert();
+
+    //});
+    
+  };
+  showSuccesfulUploadAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Picture posted',
+      subTitle: 'Picture was successfully posted!',
+      buttons: ['OK']
+    });
+    alert.present();
+    this.sendPicture();
+    // clear the previous photo data in the variable
+    this.base64Image = "";
+  };
+
 };
 
 export const snapshotToArray = snapshot => {
