@@ -2,7 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Content } from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
+import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
 declare const google: any;
+
 
 @Component({
   selector: 'page-home',
@@ -16,10 +18,19 @@ export class HomePage {
 
   data = { type:'', nickname:'', message:'' };
   chats = [];
+  camOptionsSet:boolean = false;
+  cameraOptions:CameraOptions;
+  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  public imageToShow:any;
+  isImageLoading:boolean = true;
+
+  public photos : any;
+  public base64Image : string;
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera) {
+
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
@@ -44,7 +55,9 @@ export class HomePage {
       }, 1000);
     });
   }
-
+  ngOnInit() {
+    this.photos = [];
+  }
   sendMessage() {
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     newData.set({
@@ -54,6 +67,7 @@ export class HomePage {
       sendDate:Date()
     });
     this.data.message = '';
+    this.imageToShow = '';
   }
   exitChat() {
     let exitData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
@@ -70,8 +84,24 @@ export class HomePage {
       nickname:this.nickname
     });
   }
-
+  
   logEvent(){
+    const options : CameraOptions = {
+      quality: 50, // picture quality
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE
+    }
+    this.camera.getPicture(this.cameraOptions).then((imageData) =>{
+this.isImageLoading = true;
+this.base64Image = "data:image/jpeg;base64," + imageData;
+      this.photos.push(this.base64Image);
+      this.photos.reverse();
+this.isImageLoading = false;
+    },function(err){
+      console.log(err);
+    });
+    
     console.log("Camera button event detected");
   }
 
@@ -105,7 +135,8 @@ export class HomePage {
       );
     }
   }
-}
+};
+
 export const snapshotToArray = snapshot => {
   let returnArr = [];
 
