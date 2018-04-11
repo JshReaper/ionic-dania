@@ -38,7 +38,6 @@ export class HomePage {
       sendDate:Date()
     });
     this.data.message = '';
-  
     firebase.database().ref('chatrooms/'+this.roomkey+'/chats').on('value', resp => {
       this.chats = [];
       this.chats = snapshotToArray(resp);
@@ -86,7 +85,7 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(this.cameraOptions).then((imageData) =>{
+    this.camera.getPicture(options).then((imageData) =>{
 this.isImageLoading = true;
 this.base64Image = "data:image/jpeg;base64," + imageData;
       this.photos.push(this.base64Image);
