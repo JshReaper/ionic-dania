@@ -21,7 +21,6 @@ export class HomePage {
   chats = [];
   camOptionsSet:boolean = false;
   cameraOptions:CameraOptions;
-  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
@@ -88,7 +87,7 @@ export class HomePage {
     });
   }
   
-  logEvent(){
+  cameraButton(){
     const options : CameraOptions = {
       quality: 50, // picture quality
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -109,7 +108,8 @@ this.isImageLoading = false;
   }
 
   Locate() {
-    if (navigator.geolocation) {
+    //if (navigator.geolocation) 
+    {
       navigator.geolocation.getCurrentPosition(
         position => {
           this.lat = position.coords.latitude; // Works fine
@@ -117,17 +117,18 @@ this.isImageLoading = false;
 
           let geocoder = new google.maps.Geocoder();
           let latlng = new google.maps.LatLng(this.lat, this.lng);
-          let request = {
-            latLng: latlng
-          };
+          let request = { latLng: latlng };
 
+          console.log(position);
+          console.log(request);
           geocoder.geocode(request, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[0] != null) {
-                this.data.message = results[0].formatted_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
-                console.log(this.address);  //<<<=== BUT here it Prints the correct value to the console !!!
+                this.data.message = results[0].street_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
+                console.log(this.address);   //<<<=== BUT here it Prints the correct value to the console !!!
+                this.sendMessage();
               } else {
-                alert("No address available");
+                console.log("No address available");
               }
             }
           });
