@@ -67,13 +67,15 @@ export class HomePage {
     this.photos = [];
   }
   UpdateDeci(){
-    let subscription = this.dbMeter.start().subscribe(
-      data => this.deci = data
-    );
+    if(this.dbMeter != null){
+      let subscription = this.dbMeter.start().subscribe(
+        data => this.deci = data
+      );
+    }
   }
   
   dbMeterFun(){
-    this.data.message += this.deci;
+    this.data.message += " " + this.deci;
   };
 
   sendMessage() {
@@ -146,7 +148,14 @@ export class HomePage {
 
   Locate() {
     if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
+      position => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+      };
+      
+      this.data.message += " " + this.lat + " " + this.lng;0
+      console.log(this.lat + " " + this.lng);
+      /*navigator.geolocation.getCurrentPosition(
         position => {
           this.lat = position.coords.latitude; // Works fine
           this.lng = position.coords.longitude;  // Works fine
@@ -170,7 +179,7 @@ export class HomePage {
         error => {
           console.log("Error code: " + error.code + "<br /> Error message: " + error.message);
         }
-      );
+      );*/
     }
   }
 
