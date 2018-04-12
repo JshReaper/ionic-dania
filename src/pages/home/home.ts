@@ -174,7 +174,7 @@ export class HomePage {
     
     var string = pathRefrence.getDownloadURL().then((url) =>{
       console.log(url);
-      //this.sendPicture(url);
+      this.sendPicture(url);
     });
     console.log(string);
       //succesful upload
