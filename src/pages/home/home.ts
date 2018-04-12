@@ -169,23 +169,26 @@ export class HomePage {
 
     uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
 
-    
-    var contained;
-    while( contained == null){
-      try{
-      var storage = firebase.storage();
-      var pathRefrence = storage.refFromURL('gs://ionic-dania.appspot.com/'+'images/'+ fileName + '.jpg');
+    uploadTask.on('state_changed', function(snapshot){
+
+    },function(error){
+    //handle error
+    },function(){
+      //successful upload
+    var url = uploadTask.snapshot.downloadURL;
+    console.log(url);
+    });
+
+      //var storage = firebase.storage();
+      //<var pathRefrence = storage.refFromURL('gs://ionic-dania.appspot.com/'+'images/'+ fileName + '.jpg');
       
-      contained = pathRefrence.getDownloadURL().then((url) =>{
-        console.log(url);
+      // pathRefrence.getDownloadURL().then((url) =>{
+        //console.log(url);
         
-      });
-    }catch{
-      console.log("not yet loaded");
-      
-    }
-    }
-    console.log(contained);
+      //});
+    
+    
+    //console.log("uploaded?");
     //this.sendPicture(contained);
     
     
