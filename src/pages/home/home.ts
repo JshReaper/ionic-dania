@@ -172,6 +172,7 @@ export class HomePage {
     
     var contained;
     while( contained == null){
+      try{
       var storage = firebase.storage();
       var pathRefrence = storage.refFromURL('gs://ionic-dania.appspot.com/'+'images/'+ fileName + '.jpg');
       
@@ -179,6 +180,10 @@ export class HomePage {
         console.log(url);
         
       });
+    }catch{
+      console.log("not yet loaded");
+      
+    }
     }
     console.log(contained);
     //this.sendPicture(contained);
