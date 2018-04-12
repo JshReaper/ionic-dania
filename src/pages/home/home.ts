@@ -172,7 +172,7 @@ export class HomePage {
     var storage = firebase.storage();
     var pathRefrence = storage.refFromURL('gs://ionic-dania.appspot.com/'+'images/' + fileName + '.jpg');
     
-    var string = pathRefrence.child('images/' + fileName + '.jpg').getDownloadURL().then((url) =>{
+    var string = pathRefrence.getDownloadURL().then((url) =>{
       console.log(url);
       //this.sendPicture(url);
     });
