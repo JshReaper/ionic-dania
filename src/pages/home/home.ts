@@ -107,7 +107,7 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(this.cameraOptions).then((imageData) =>{;
+    this.camera.getPicture(options).then((imageData) =>{;
     let imageBlob = this.dataURItoBlob('data:image/jpeg;base64,' + imageData);
     if(imageBlob)
     this.upload(imageBlob);
