@@ -42,6 +42,7 @@ export class HomePage {
       type:'join',
       user:this.nickname,
       message:this.nickname+' has joined this room.',
+      hasPicture:false,
       sendDate:Date()
     });
     this.data.message = '';
@@ -177,24 +178,6 @@ export class HomePage {
     console.log(url);
     this.sendPicture(url);
     });
-
-      //var storage = firebase.storage();
-      //<var pathRefrence = storage.refFromURL('gs://ionic-dania.appspot.com/'+'images/'+ fileName + '.jpg');
-      
-      // pathRefrence.getDownloadURL().then((url) =>{
-        //console.log(url);
-        
-      //});
-    
-    
-    //console.log("uploaded?");
-    //this.sendPicture(contained);
-    
-    
-      //succesful upload
-
-    
-   
     
   };
   showFailedUploadAlert = (imageURL)=>{
