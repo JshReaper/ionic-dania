@@ -165,8 +165,6 @@ export class HomePage {
 
     var uploadTask = firebase.storage().ref().child('images/' + fileName + '.jpg').put(imageData);
 
-    console.log(uploadTask.snapshot.downloadURL);
-
     uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
 
     uploadTask.on('state_changed', function(snapshot){
@@ -177,6 +175,7 @@ export class HomePage {
       //successful upload
     var url = uploadTask.snapshot.downloadURL;
     console.log(url);
+    this.sendPicture(url);
     });
 
       //var storage = firebase.storage();
