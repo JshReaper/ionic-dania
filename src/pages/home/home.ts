@@ -172,7 +172,7 @@ export class HomePage {
     var storage = firebase.storage();
     var pathRefrence = storage.ref('images/' + fileName + '.jpg');
 
-    pathRefrence.child('images/' + fileName + '.jpg').getDownloadURL().then((url) =>{
+    pathRefrence.child('').getDownloadURL().then((url) =>{
       console.log(url);
       this.sendPicture(url);
     });
