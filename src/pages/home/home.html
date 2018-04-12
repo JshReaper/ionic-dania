@@ -26,7 +26,7 @@
             <span class="msg-date">{{chat.sendDate | date:'short'}}</span>
             <p text-wrap>{{chat.message}}</p>
             <p text-wrap *ngIf="chat.hasPicture === true">{{chat.picture}}</p>
-            <img src="chat.picture" *ngIf="chat.hasPicture === true"/>
+            <img src="{{chat.picture}}" *ngIf="chat.hasPicture === true"/>
           </div>
         </div>
         <div class="chat-message" text-left *ngIf="chat.user !== nickname">
@@ -63,6 +63,7 @@
   </ion-fab-list>
 </ion-fab>
 </ion-content>
+
 
 <ion-footer>
   <ion-grid>

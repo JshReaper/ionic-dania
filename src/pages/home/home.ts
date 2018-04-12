@@ -89,14 +89,14 @@ export class HomePage {
       this.data.message = '';
     }
   }
-  sendPicture() {
+  sendPicture(imageURL:string) {
     let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
-     newData.set({
-        type:this.data.type,
-        user:this.data.nickname,
-        hasPicture:true,
-        picture:this.base64Image,
-        sendDate:Date()
+    newData.set({
+      type:this.data.type,
+      user:this.data.nickname,
+      hasPicture:true,
+      picture:imageURL,
+      sendDate:Date()
     });
     this.data.message = '';
     this.imageToShow = '';
@@ -124,17 +124,25 @@ export class HomePage {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE
     }
-    this.camera.getPicture(options).then((imageData) =>{
-    this.isImageLoading = true;
-    this.base64Image = "data:image/jpeg;base64," + imageData;
-    this.upload();
-    this.isImageLoading = false;
+    this.camera.getPicture(options).then((imageData) =>{;
+    let imageBlob = this.dataURItoBlob('data:image/jpeg;base64,' + imageData);
+    if(imageBlob)
+    this.upload(imageBlob);
     },function(err){
       console.log(err);
     });
     
     console.log("Camera button event detected");
   }
+  dataURItoBlob(dataURI) {
+    // code adapted from: http://stackoverflow.com/questions/33486352/cant-upload-image-to-aws-s3-from-ionic-camera
+    let binary = atob(dataURI.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  };
 
   Locate() {
     if (navigator.geolocation){
@@ -166,32 +174,39 @@ export class HomePage {
     }
   }
 
-  upload(){
+  upload(imageData){
     let storageRef = firebase.storage().ref();
  
     //timestamp as filename
     const fileName = Math.floor(Date.now() / 1000);
 
-    //creating a reference to images/todays-date.jpg
-    const imageRef = storageRef.child('images/${filename}.jpg');
+    var uploadTask = firebase.storage().ref().child('images/' + fileName + '.jpg').put(imageData);
 
-    //imageRef.putString(this.base64Image, firebase.storage.StringFormat.DATA_URL).then((snapshot)=>{
-
+    uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
       //succesful upload
-      this.showSuccesfulUploadAlert();
 
-    //});
+    console.log(uploadTask.snapshot.downloadURL);
+   
     
   };
+  showFailedUploadAlert = (imageURL)=>{
+    let alert = this.alertCtrl.create({
+      title: 'Upload failed..',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
 
-  showSuccesfulUploadAlert() {
+  showSuccesfulUploadAlert = (snapshot) => {
     let alert = this.alertCtrl.create({
       title: 'Picture posted',
       subTitle: 'Picture was successfully posted!',
       buttons: ['OK']
     });
     alert.present();
-    this.sendPicture();
+    var currentImage = snapshot.downloadUrl;
+    console.log(snapshot.downloadUrl);
+    this.sendPicture(currentImage);
     // clear the previous photo data in the variable
     this.base64Image = "";
   };
