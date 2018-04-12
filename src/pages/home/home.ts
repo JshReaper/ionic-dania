@@ -4,7 +4,7 @@ import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import { DBMeter } from '@ionic-native/db-meter'
+import { DBMeter } from '@ionic-native/db-meter';
 declare const google: any;
 
 
