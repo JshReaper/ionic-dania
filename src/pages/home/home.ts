@@ -171,7 +171,7 @@ export class HomePage {
 
     },function(error){
     //handle error
-    },function(){
+    },()=>{
       //successful upload
     var url = uploadTask.snapshot.downloadURL;
     console.log(url);
