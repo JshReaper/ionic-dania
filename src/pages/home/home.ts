@@ -1,41 +1,49 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content , AlertController} from 'ionic-angular';
+import { NavController, NavParams, Content , AlertController, Events} from 'ionic-angular';
 import { RoomPage } from '../room/room';
 import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { DBMeter } from '@ionic-native/db-meter'
 declare const google: any;
 
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers:[DBMeter]
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
   lat;
   lng;
-  address;
 
   data = { type:'', nickname:'', message:'' };
   chats = [];
+  deci:any;
   camOptionsSet:boolean = false;
   cameraOptions:CameraOptions;
+  private subscription:any;
+  //camera:Camera;
   roomkey:string;
   nickname:string;
   offStatus:boolean = false;
   public imageToShow:any;
   isImageLoading:boolean = true;
- alertCtrl: AlertController;
+  alertCtrl: AlertController;
+
+  
+
   public photos : any;
   public base64Image : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController) {
-
+  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController,private dbMeter: DBMeter) {
+    this.UpdateDeci();
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
     this.data.type = 'message';
     this.data.nickname = this.nickname;
     this.alertCtrl = AlertCtrl;
+
   
     let joinData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
     joinData.set({
@@ -45,7 +53,6 @@ export class HomePage {
       sendDate:Date()
     });
     this.data.message = '';
-  
     firebase.database().ref('chatrooms/'+this.roomkey+'/chats').on('value', resp => {
       this.chats = [];
       this.chats = snapshotToArray(resp);
@@ -59,16 +66,28 @@ export class HomePage {
   ngOnInit() {
     this.photos = [];
   }
+  UpdateDeci(){
+    if(this.dbMeter != null){
+      let subscription = this.dbMeter.start().subscribe(
+        data => this.deci = data
+      );
+    }
+  }
+  
+  dbMeterFun(){
+    this.data.message += " " + this.deci;
+  };
+
   sendMessage() {
-    if(this.data.message != ""){
-      let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
-      newData.set({
-        type:this.data.type,
-        user:this.data.nickname,
-        message:this.data.message,
-        hasPicture:false,
-        sendDate:Date()
-      });
+    if (this.data.message != ""){
+        let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
+          newData.set({
+          type:this.data.type,
+          user:this.data.nickname,
+          message:this.data.message,
+          hasPicture:false,
+          sendDate:Date()
+        });
       this.data.message = '';
     }
   }
@@ -129,7 +148,14 @@ export class HomePage {
 
   Locate() {
     if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
+      position => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+      };
+      
+      this.data.message += " " + this.lat + " " + this.lng;0
+      console.log(this.lat + " " + this.lng);
+      /*navigator.geolocation.getCurrentPosition(
         position => {
           this.lat = position.coords.latitude; // Works fine
           this.lng = position.coords.longitude;  // Works fine
@@ -142,8 +168,8 @@ export class HomePage {
           geocoder.geocode(request, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[0] != null) {
-                this.data.message = results[0].street_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
-                console.log(results[0].street_address);   //<<<=== BUT here it Prints the correct value to the console !!!
+                this.data.message += results[0].formatted_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
+                console.log(results[0].formatted_address);   //<<<=== BUT here it Prints the correct value to the console !!!
               } else {
                 console.log("No address available");
               }
@@ -153,7 +179,7 @@ export class HomePage {
         error => {
           console.log("Error code: " + error.code + "<br /> Error message: " + error.message);
         }
-      );
+      );*/
     }
   }
 
@@ -215,7 +241,6 @@ export class HomePage {
     // clear the previous photo data in the variable
     this.base64Image = "";
   };
-
 };
 
 export const snapshotToArray = snapshot => {

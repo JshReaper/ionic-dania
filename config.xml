@@ -84,4 +84,7 @@
     <plugin name="cordova-plugin-camera" spec="^4.0.2" />
     <allow-navigation href="http://192.168.0.103:8100" />
     <engine name="ios" spec="4.5.4" />
+    <engine name="android" spec="^7.0.0" />
+    <engine name="browser" spec="^5.0.3" />
+    <plugin name="cordova-plugin-dbmeter" spec="~2.1.0" />
 </widget>

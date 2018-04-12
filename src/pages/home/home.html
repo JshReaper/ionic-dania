@@ -9,6 +9,7 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+ 
 </ion-header>
 
 <ion-content>
@@ -51,9 +52,13 @@
         <ion-icon name="camera"></ion-icon>
         <div class="label">Camera</div>
       </button>
-      <button ion-fab id="address" (click)="Locate();"[style.background-color]="color">
+      <button ion-fab (click)="Locate();"[style.background-color]="color">
         <ion-icon name="locate"></ion-icon>
         <div class="label">Address</div>
+      </button>
+      <button ion-fab (click)="dbMeterFun();"[style.background-color]="color">
+        <ion-icon name="&#xf2ac;"></ion-icon>
+        <div class="label">Decibel</div>
       </button>
   </ion-fab-list>
 </ion-fab>
