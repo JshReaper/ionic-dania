@@ -163,7 +163,7 @@ export class HomePage {
     //timestamp as filename
     const fileName = Math.floor(Date.now() / 1000);
 
-    var uploadTask = firebase.storage().ref().child('images/${filename}.jpg').put(imageData);
+    var uploadTask = firebase.storage().ref().child('images/' + fileName + '.jpg').put(imageData);
 
     uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
       //succesful upload
@@ -188,6 +188,7 @@ export class HomePage {
     });
     alert.present();
     var currentImage = snapshot.downloadUrl;
+    console.log(currentImage);
     this.sendPicture(currentImage);
     // clear the previous photo data in the variable
     this.base64Image = "";
