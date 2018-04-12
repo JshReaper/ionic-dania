@@ -168,7 +168,7 @@ export class HomePage {
     uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
       //succesful upload
 
-
+    console.log(uploadTask.snapshot.downloadURL);
    
     
   };
@@ -188,7 +188,7 @@ export class HomePage {
     });
     alert.present();
     var currentImage = snapshot.downloadUrl;
-    console.log(currentImage);
+    console.log(snapshot.downloadUrl());
     this.sendPicture(currentImage);
     // clear the previous photo data in the variable
     this.base64Image = "";
