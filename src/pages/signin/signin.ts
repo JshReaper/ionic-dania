@@ -22,8 +22,10 @@ export class SigninPage {
     console.log('ionViewDidLoad SigninPage');
   }
   enterNickname() {
-    this.navCtrl.setRoot(RoomPage, {
-      nickname: this.data.nickname
-    });
+    if(this.data.nickname != ""){
+      this.navCtrl.setRoot(RoomPage, {
+        nickname: this.data.nickname
+      });
+    }
   }
 }

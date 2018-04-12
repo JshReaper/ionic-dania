@@ -70,12 +70,14 @@ export class HomePage {
     let subscription = this.dbMeter.start().subscribe(
       data => this.deci = data
     );
-    
   }
+  
+  dbMeterFun(){
+    this.data.message += this.deci;
+  };
+
   sendMessage() {
     if (this.data.message != ""){
-      
-      this.data.message +=' '+ this.deci;
         let newData = firebase.database().ref('chatrooms/'+this.roomkey+'/chats').push();
           newData.set({
           type:this.data.type,
@@ -157,8 +159,8 @@ export class HomePage {
           geocoder.geocode(request, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[0] != null) {
-                this.data.message = results[0].street_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
-                console.log(results[0].street_address);   //<<<=== BUT here it Prints the correct value to the console !!!
+                this.data.message += results[0].formatted_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
+                console.log(results[0].formatted_address);   //<<<=== BUT here it Prints the correct value to the console !!!
               } else {
                 console.log("No address available");
               }
