@@ -165,10 +165,20 @@ export class HomePage {
 
     var uploadTask = firebase.storage().ref().child('images/' + fileName + '.jpg').put(imageData);
 
+    console.log(uploadTask.snapshot.downloadURL);
+
     uploadTask.then(this.showSuccesfulUploadAlert, this.showFailedUploadAlert);
+
+    var storage = firebase.storage();
+    var pathRefrence = storage.ref('images/' + fileName + '.jpg');
+
+    pathRefrence.getDownloadURL().then((url) =>{
+      console.log(url);
+      this.sendPicture(url);
+    });
       //succesful upload
 
-    console.log(uploadTask.snapshot.downloadURL);
+    
    
     
   };
@@ -187,9 +197,6 @@ export class HomePage {
       buttons: ['OK']
     });
     alert.present();
-    var currentImage = snapshot.downloadUrl;
-    console.log(snapshot.downloadUrl);
-    this.sendPicture(currentImage);
     // clear the previous photo data in the variable
     this.base64Image = "";
   };
