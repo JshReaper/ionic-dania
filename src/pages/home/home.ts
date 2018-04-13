@@ -5,18 +5,21 @@ import * as firebase from 'Firebase';
 import {Camera , CameraOptions, DestinationType, EncodingType, MediaType} from '@ionic-native/camera'
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { DBMeter } from '@ionic-native/db-meter';
+import { Geolocation } from '@ionic-native/geolocation';
+import { Platform } from 'ionic-angular';
+
 declare const google: any;
 
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers:[DBMeter]
+  providers:[DBMeter, Geolocation]
 })
 export class HomePage {
   @ViewChild(Content) content: Content;
-  lat;
-  lng;
+  lat: any;
+  lng: any;
 
   data = { type:'', nickname:'', message:'' };
   chats = [];
@@ -36,7 +39,9 @@ export class HomePage {
 
   public photos : any;
   public base64Image : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private camera : Camera, AlertCtrl : AlertController,private dbMeter: DBMeter) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+    private camera : Camera, AlertCtrl : AlertController,private dbMeter: DBMeter,
+    private geolocation: Geolocation,public platform: Platform) {
     this.UpdateDeci();
     this.roomkey = this.navParams.get("key") as string;
     this.nickname = this.navParams.get("nickname") as string;
@@ -148,40 +153,19 @@ export class HomePage {
   };
 
   Locate() {
-    if (navigator.geolocation){
-      position => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-      };
-      
-      this.data.message += " " + this.lat + " " + this.lng;0
-      console.log(this.lat + " " + this.lng);
-      /*navigator.geolocation.getCurrentPosition(
-        position => {
-          this.lat = position.coords.latitude; // Works fine
-          this.lng = position.coords.longitude;  // Works fine
+    
+    this.platform.ready().then(() => this.obtenerPosicion());
+  }
 
-          let geocoder = new google.maps.Geocoder();
-          let latlng = new google.maps.LatLng(this.lat, this.lng);
-          let request = { latLng: latlng };
-
-          console.log(position);
-          geocoder.geocode(request, (results, status) => {
-            if (status == google.maps.GeocoderStatus.OK) {
-              if (results[0] != null) {
-                this.data.message += results[0].formatted_address;  //<<<=== DOES NOT WORK, when I output this {{ address }} in the html, it's empty
-                console.log(results[0].formatted_address);   //<<<=== BUT here it Prints the correct value to the console !!!
-              } else {
-                console.log("No address available");
-              }
-            }
-          });
-        },
-        error => {
-          console.log("Error code: " + error.code + "<br /> Error message: " + error.message);
-        }
-      );*/
-    }
+  obtenerPosicion(): any {
+    this.geolocation.getCurrentPosition().then(response => {
+      console.log("res" +response);
+    })
+      .catch(error => {
+        console.log("not working: "+error.message);
+      })
+      this.data.message += " " + this.lat + " " + this.lng;
+      //console.log(this.lat + " " + this.lng);
   }
 
   upload(imageData){
